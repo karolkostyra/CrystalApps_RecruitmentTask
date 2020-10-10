@@ -11,9 +11,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private Camera camera;
     private Transform cameraTransform;
 
-    private float sensitivityX = 4.0f;
-    private float sensitivityY = 1.0f;
-
     private float mouseX, mouseY = 0.0f;
 
     private Vector3 direction;
@@ -22,8 +19,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private float savedX, savedY = 0.0f;
 
     private Quaternion savedRotation;
-    private Quaternion startTargetRotation;
-    private Vector3 savedCameraPosition;
     private bool wasClicked = false;
 
 
@@ -33,7 +28,6 @@ public class ThirdPersonCamera : MonoBehaviour
         cameraTransform = camera.transform;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        startTargetRotation = target.rotation;
 
         direction = new Vector3(0, 0, -distanceToObject);
         cameraTransform.position = target.position + (rotation * direction);
@@ -44,6 +38,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         mouseX += Input.GetAxis("Mouse X") * rotationSpeed;
         mouseY -= Input.GetAxis("Mouse Y") * rotationSpeed;
+
         if (!wasClicked)
         {
             mouseY = Mathf.Clamp(mouseY, 0, 60);
@@ -78,55 +73,12 @@ public class ThirdPersonCamera : MonoBehaviour
             }
             else
             {
-                SaveCurrentMouseInput();
                 savedRotation = target.rotation;
+                SaveCurrentMouseInput();
                 RotateCamera(rotation);
                 RotatePlayer();
             }
         }
-        /*
-        else if (Input.GetMouseButtonUp(1))
-        {
-            if (wasClicked)
-            {
-                Debug.Log("up");
-                target.rotation = startTargetRotation;
-                mouseX = mouseY = 0.0f;
-                //StartCoroutine(Waiter(4f));
-                //wasClicked = false;
-            }
-        }
-        else
-        {
-            Debug.Log("nothing");
-            RotateCamera(rotation);
-            RotatePlayer();
-        }
-        */
-
-        /*
-        else
-        {
-            Debug.Log("TEST");
-            if (wasClicked)
-            {
-                target.rotation = startTargetRotation;
-                mouseX = mouseY = 0.0f;
-
-                //target.localEulerAngles = new Vector3(0, 0, 0);
-                //cameraTransform.LookAt(target);
-                //cameraTransform.position = target.position + (rotation * direction);
-                wasClicked = false;
-            }
-            else
-            {
-                RotateCamera(rotation);
-                RotatePlayer();
-            }
-            //cameraTransform.position = target.position + (rotation * direction);
-            //cameraTransform.LookAt(target);
-        }
-        */
     }
 
     private void SaveCurrentMouseInput()
@@ -143,15 +95,5 @@ public class ThirdPersonCamera : MonoBehaviour
     private void RotateCamera(Quaternion _rotation)
     {
         target.rotation = _rotation;
-    }
-
-    private void SaveCurrentCameraPos(Quaternion _rotation)
-    {
-        savedRotation = _rotation;
-    }
-
-    private void SaveCameraPosition(Vector3 _position, Quaternion _rotation, Vector3 _direction)
-    {
-        savedCameraPosition = _position + (_rotation * _direction);
     }
 }
