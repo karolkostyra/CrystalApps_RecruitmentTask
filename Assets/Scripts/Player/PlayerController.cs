@@ -31,23 +31,18 @@ public class PlayerController : MonoBehaviour
     private float currentVelocity;
     private float _walkSpeed, _runSpeed;
 
-    void Start()
+    private void Start()
     {
         _animator = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
         SetSpeed();
     }
-    
-    void Update()
+
+    private void FixedUpdate()
     {
-        HandleInput();
-
-        currentVelocity = runPressed ? runVelocity : walkVelocity;
-
         if (!Grounded())
         {
             _runSpeed = _walkSpeed;
-            //runSpeed = walkSpeed = walkSpeed / 2;
         }
         else
         {
@@ -55,6 +50,14 @@ public class PlayerController : MonoBehaviour
         }
 
         Move();
+    }
+
+    private void Update()
+    {
+        HandleInput();
+
+        currentVelocity = runPressed ? runVelocity : walkVelocity;
+
         HandleAcceleration();
         HandleDeceleration();
 
@@ -74,7 +77,6 @@ public class PlayerController : MonoBehaviour
         if ((forwardPressed || runPressed) && velocityZ < currentVelocity)
         {
             velocityZ += Time.deltaTime * acceleration;
-            //float currentSpeed = runPressed ? _runSpeed : walkSpeed;
         }
         //move back animation
         if (backwardPressed && velocityZ > -currentVelocity)
