@@ -29,11 +29,13 @@ public class PlayerController : MonoBehaviour
     private float deceleration = 2.0f;
     private float velocityX, velocityZ = 0.0f;
     private float currentVelocity;
+    private float _walkSpeed, _runSpeed;
 
     void Start()
     {
         _animator = GetComponent<Animator>();
         _rb = GetComponent<Rigidbody>();
+        SetSpeed();
     }
     
     void Update()
@@ -41,6 +43,16 @@ public class PlayerController : MonoBehaviour
         HandleInput();
 
         currentVelocity = runPressed ? runVelocity : walkVelocity;
+
+        if (!Grounded())
+        {
+            _runSpeed = _walkSpeed;
+            //runSpeed = walkSpeed = walkSpeed / 2;
+        }
+        else
+        {
+            SetSpeed();
+        }
 
         Move();
         HandleAcceleration();
@@ -50,13 +62,19 @@ public class PlayerController : MonoBehaviour
         _animator.SetFloat("VelocityZ", velocityZ);
     }
 
+    private void SetSpeed()
+    {
+        _runSpeed = runSpeed;
+        _walkSpeed = walkSpeed;
+    }
+
     private void HandleAcceleration()
     {
         //move forward animation
         if ((forwardPressed || runPressed) && velocityZ < currentVelocity)
         {
             velocityZ += Time.deltaTime * acceleration;
-            float currentSpeed = runPressed ? runSpeed : walkSpeed;
+            //float currentSpeed = runPressed ? _runSpeed : walkSpeed;
         }
         //move back animation
         if (backwardPressed && velocityZ > -currentVelocity)
@@ -113,23 +131,23 @@ public class PlayerController : MonoBehaviour
     {
         if (forwardPressed)
         {
-            _rb.AddForce(walkSpeed * transform.forward);
+            _rb.AddForce(_walkSpeed * transform.forward);
             if (runPressed)
             {
-                _rb.AddForce(runSpeed * transform.forward);
+                _rb.AddForce(_runSpeed * transform.forward);
             }
         }
         if (leftPressed)
         {
-            _rb.AddForce(walkSpeed * -transform.right);
+            _rb.AddForce(_walkSpeed * -transform.right);
         }
         if (rightPressed)
         {
-            _rb.AddForce(walkSpeed * transform.right);
+            _rb.AddForce(_walkSpeed * transform.right);
         }
         if (backwardPressed)
         {
-            _rb.AddForce((walkSpeed - walkSpeed / 4) * -transform.forward);
+            _rb.AddForce((_walkSpeed - _walkSpeed / 4) * -transform.forward);
         }
         if (jumpPressed && Grounded())
         {
