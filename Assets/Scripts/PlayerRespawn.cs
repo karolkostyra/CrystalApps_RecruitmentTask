@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class PlayerRespawn : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
     private Vector3 startPosition;
-    private Quaternion startRotation;
+
+    private void Start()
+    {
+        startPosition = this.transform.position;
+    }
 
     private void OnEnable()
     {
@@ -21,7 +24,6 @@ public class PlayerRespawn : MonoBehaviour
 
     private void Respawn()
     {
-        player.transform.position = startPosition;
-        player.transform.rotation = startRotation;
+        this.transform.position = startPosition;
     }
 }
