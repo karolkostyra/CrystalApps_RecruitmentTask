@@ -9,7 +9,8 @@ public class FollowTarget : MonoBehaviour
     void Update()
     {
         transform.position = new Vector3(targetToFollow.position.x,
-                                         transform.position.y,
+                                         targetToFollow.position.y+transform.position.y,
+                                         //transform.position.y,
                                          targetToFollow.position.z);
     }
 }
